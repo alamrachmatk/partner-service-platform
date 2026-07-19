@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'features/auth/presentation/screens/auth_screen.dart';
+import 'features/auth/presentation/screens/auth_mitra_screen.dart';
 import 'core/constants/app_colors.dart';
 
 void main() => runApp(const JasaKuMitraApp());

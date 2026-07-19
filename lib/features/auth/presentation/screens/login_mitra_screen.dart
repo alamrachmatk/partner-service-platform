@@ -10,8 +10,8 @@ class LoginMitraScreen extends StatefulWidget {
 
 class _LoginMitraScreenState extends State<LoginMitraScreen> {
   final _phoneCtrl = TextEditingController();
-  final List<TextEditingController> _otpCtrls = List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _otpFocus = List.generate(6, (_) => FocusNode());
+  final List<TextEditingController> _otpCtrls = List.generate(4, (_) => TextEditingController());
+  final List<FocusNode> _otpFocus = List.generate(4, (_) => FocusNode());
   bool _loading = false, _otpSent = false;
 
   @override
@@ -33,7 +33,7 @@ class _LoginMitraScreenState extends State<LoginMitraScreen> {
 
   Future<void> _verifyOtp() async {
     final otp = _otpCtrls.map((c) => c.text).join();
-    if (otp.length < 6) { _snack('Masukkan 6 digit kode OTP'); return; }
+    if (otp.length < 4) { _snack('Masukkan 4 digit kode OTP'); return; }
     setState(() => _loading = true);
     await Future.delayed(const Duration(seconds: 1));
     setState(() => _loading = false);
@@ -127,7 +127,7 @@ class _LoginMitraScreenState extends State<LoginMitraScreen> {
             ),
           ] else ...[
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(6, (i) => SizedBox(width: 48, height: 56,
+              children: List.generate(4, (i) => SizedBox(width: 64, height: 64,
                 child: TextField(
                   controller: _otpCtrls[i], focusNode: _otpFocus[i],
                   keyboardType: TextInputType.number, maxLength: 1,
@@ -143,7 +143,7 @@ class _LoginMitraScreenState extends State<LoginMitraScreen> {
                         borderSide: const BorderSide(color: AppColors.primary, width: 2)),
                   ),
                   onChanged: (v) {
-                    if (v.isNotEmpty && i < 5) _otpFocus[i + 1].requestFocus();
+                    if (v.isNotEmpty && i < 3) _otpFocus[i + 1].requestFocus();
                     setState(() {});
                   },
                 ),
