@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/models/mitra_model.dart';
 import 'auth_mitra_screen.dart';
+import '../../../home/presentation/screens/main_mitra_screen.dart';
 
 class VerificationStatusScreen extends StatelessWidget {
   final MitraModel mitra;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import 'register_mitra_screen.dart';
+import '../../../../core/models/mitra_model.dart';
+import '../../../home/presentation/screens/main_mitra_screen.dart';
 
 class LoginMitraScreen extends StatefulWidget {
   const LoginMitraScreen({super.key});
@@ -38,7 +40,17 @@ class _LoginMitraScreenState extends State<LoginMitraScreen> {
     await Future.delayed(const Duration(seconds: 1));
     setState(() => _loading = false);
     if (!mounted) return;
-    _snack('Login berhasil! Dashboard segera hadir.', color: AppColors.success);
+    final mitra = MitraModel(
+      id: 'MTR-LOGIN',
+      fullName: 'Mitra JasaKu',
+      phone: _phoneCtrl.text.trim(),
+      status: MitraStatus.verified,
+    );
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => MainMitraScreen(
+          key: MainMitraScreen.globalKey, mitra: mitra)),
+      (_) => false,
+    );
   }
 
   void _snack(String msg, {Color color = Colors.orange}) {
