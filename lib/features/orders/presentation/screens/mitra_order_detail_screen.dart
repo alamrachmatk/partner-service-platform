@@ -148,12 +148,43 @@ class _MitraOrderDetailScreenState extends State<MitraOrderDetailScreen> {
             _StatusTimeline(currentStatus: _order.status),
             const SizedBox(height: 16),
 
-            // ── Info layanan ──
-            _SectionCard(title: 'Layanan', icon: Icons.handyman_outlined,
+            // ── Info layanan + item detail ──
+            _SectionCard(title: 'Detail Layanan', icon: Icons.handyman_outlined,
               child: Column(children: [
                 _InfoRow(label: 'Layanan', value: _order.serviceName),
                 _InfoRow(label: 'ID Order', value: _order.id,
                     valueColor: AppColors.primary),
+                if (_order.items.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  const Divider(height: 1),
+                  const SizedBox(height: 10),
+                  const Text('Rincian Item',
+                      style: TextStyle(fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textSecondary)),
+                  const SizedBox(height: 8),
+                  ..._order.items.map((item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(children: [
+                      Container(width: 6, height: 6,
+                          decoration: const BoxDecoration(
+                              color: AppColors.primary, shape: BoxShape.circle)),
+                      const SizedBox(width: 8),
+                      Expanded(child: Text(item.name,
+                          style: const TextStyle(fontSize: 13,
+                              color: AppColors.textPrimary))),
+                      Text('x${item.qty}',
+                          style: const TextStyle(fontSize: 12,
+                              color: AppColors.textSecondary)),
+                      const SizedBox(width: 8),
+                      Text(item.formattedSubtotal,
+                          style: const TextStyle(fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary)),
+                    ]),
+                  )),
+                  const Divider(height: 16),
+                ],
                 _InfoRow(label: 'Total', value: _order.formattedPrice,
                     valueColor: AppColors.primary, isBold: true),
               ]),

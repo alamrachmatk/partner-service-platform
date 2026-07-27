@@ -3,6 +3,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/models/mitra_model.dart';
 import '../../../dashboard/presentation/screens/dashboard_screen.dart';
 import '../../../orders/presentation/screens/mitra_orders_screen.dart';
+import '../../../schedule/presentation/screens/schedule_screen.dart';
 import '../../../chat/presentation/screens/mitra_chat_screen.dart';
 import '../../../profile/presentation/screens/mitra_profile_screen.dart';
 
@@ -25,6 +26,7 @@ class _MainMitraScreenState extends State<MainMitraScreen> {
     _pages = [
       DashboardScreen(mitra: widget.mitra),
       MitraOrdersScreen(mitra: widget.mitra),
+      const ScheduleScreen(),
       const MitraChatScreen(),
       MitraProfileScreen(mitra: widget.mitra),
     ];
@@ -37,6 +39,7 @@ class _MainMitraScreenState extends State<MainMitraScreen> {
   static const _navItems = [
     (icon: Icons.dashboard_rounded,           label: 'Dashboard'),
     (icon: Icons.receipt_long_rounded,        label: 'Pesanan'),
+    (icon: Icons.calendar_month_rounded,      label: 'Jadwal'),
     (icon: Icons.chat_bubble_outline_rounded, label: 'Chat'),
     (icon: Icons.person_outline_rounded,      label: 'Profil'),
   ];
@@ -53,7 +56,7 @@ class _MainMitraScreenState extends State<MainMitraScreen> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 6),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(_navItems.length, (i) {
@@ -63,7 +66,7 @@ class _MainMitraScreenState extends State<MainMitraScreen> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 8),
+                        horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: selected
                           ? AppColors.primary.withOpacity(0.10)
@@ -72,15 +75,15 @@ class _MainMitraScreenState extends State<MainMitraScreen> {
                     ),
                     child: Column(mainAxisSize: MainAxisSize.min, children: [
                       Icon(_navItems[i].icon,
-                          color: selected ? AppColors.primary : AppColors.textHint,
-                          size: 24),
-                      const SizedBox(height: 3),
+                          color: selected
+                              ? AppColors.primary : AppColors.textHint,
+                          size: 22),
+                      const SizedBox(height: 2),
                       Text(_navItems[i].label,
-                          style: TextStyle(fontSize: 11,
+                          style: TextStyle(fontSize: 10,
                               fontWeight: FontWeight.w600,
                               color: selected
-                                  ? AppColors.primary
-                                  : AppColors.textHint)),
+                                  ? AppColors.primary : AppColors.textHint)),
                     ]),
                   ),
                 );

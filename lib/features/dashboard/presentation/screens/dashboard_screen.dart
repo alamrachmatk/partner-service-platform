@@ -1,43 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/models/mitra_model.dart';
+import '../../../../core/models/mitra_order_model.dart';
+import '../../../orders/presentation/screens/mitra_order_detail_screen.dart';
 
 // ── Model & Enum lokal ──
-enum _OrderStatus { pending, onTheWay, completed }
-
-extension _OrderStatusX on _OrderStatus {
-  String get label {
-    switch (this) {
-      case _OrderStatus.pending:   return 'Menunggu';
-      case _OrderStatus.onTheWay:  return 'Dalam Perjalanan';
-      case _OrderStatus.completed: return 'Selesai';
-    }
-  }
-  Color get color {
-    switch (this) {
-      case _OrderStatus.pending:   return AppColors.warning;
-      case _OrderStatus.onTheWay:  return AppColors.info;
-      case _OrderStatus.completed: return AppColors.success;
-    }
-  }
-  String get emoji {
-    switch (this) {
-      case _OrderStatus.pending:   return '⏳';
-      case _OrderStatus.onTheWay:  return '🚗';
-      case _OrderStatus.completed: return '✅';
-    }
-  }
-}
-
-class _OrderItem {
-  final String id, service, customer, time;
-  final double price;
-  final _OrderStatus status;
-  const _OrderItem({required this.id, required this.service,
-      required this.customer, required this.time,
-      required this.price, required this.status});
-}
-
 // ── Screen utama ──
 class DashboardScreen extends StatefulWidget {
   final MitraModel mitra;
@@ -53,17 +20,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   static const _weeklyData = [85000, 150000, 120000, 200000, 175000, 95000, 220000];
   static const _weekDays   = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 
-  final _recentOrders = [
-    _OrderItem(id: 'ORD-001', service: 'Bersih-Bersih Rumah',
-        customer: 'Budi Santoso', time: '09:00', price: 200000,
-        status: _OrderStatus.onTheWay),
-    _OrderItem(id: 'ORD-002', service: 'Servis AC Split',
-        customer: 'Ani Rahayu', time: '13:00', price: 150000,
-        status: _OrderStatus.pending),
-    _OrderItem(id: 'ORD-003', service: 'Cuci Karpet',
-        customer: 'Hendra Wijaya', time: '15:30', price: 120000,
-        status: _OrderStatus.completed),
-  ];
+  // Pakai DummyMitraOrders — pesanan hari ini
+  List<MitraOrderModel> get _recentOrders => DummyMitraOrders.all
+      .where((o) => o.status.isActive)
+      .toList();
 
   String _fmt(double p) {
     if (p >= 1000000) return 'Rp ${(p / 1000000).toStringAsFixed(1)}jt';
@@ -207,7 +167,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ]),
                     const SizedBox(height: 10),
                     ..._recentOrders.map((o) =>
-                        _DashboardOrderCard(order: o, fmt: _fmt)),
+                        _DashboardOrderCard(
+                          order: o,
+                          fmt: _fmt,
+                          onTap: () => Navigator.push(context,
+                              MaterialPageRoute(
+                                builder: (_) => MitraOrderDetailScreen(
+                                  order: o,
+                                  onUpdate: (_) {},
+                                ),
+                              )),
+                        )),
                     const SizedBox(height: 80),
                   ],
                 ),
@@ -489,64 +459,83 @@ class _PerfItem extends StatelessWidget {
 
 // ── Order card di dashboard ──
 class _DashboardOrderCard extends StatelessWidget {
-  final _OrderItem order;
+  final MitraOrderModel order;
   final String Function(double) fmt;
-  const _DashboardOrderCard({required this.order, required this.fmt});
+  final VoidCallback onTap;
+  const _DashboardOrderCard({required this.order, required this.fmt,
+      required this.onTap});
+
+  Color get _statusColor {
+    switch (order.status) {
+      case MitraOrderStatus.pending:    return AppColors.warning;
+      case MitraOrderStatus.confirmed:  return AppColors.primary;
+      case MitraOrderStatus.onTheWay:   return AppColors.info;
+      case MitraOrderStatus.inProgress: return AppColors.primary;
+      case MitraOrderStatus.completed:  return AppColors.success;
+      default:                          return AppColors.error;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border, width: 0.5),
-      ),
-      child: Row(children: [
-        Container(width: 44, height: 44,
-          decoration: BoxDecoration(
-            color: order.status.color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Center(child: Text(order.status.emoji,
-              style: const TextStyle(fontSize: 22)))),
-        const SizedBox(width: 12),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(order.service, style: const TextStyle(fontSize: 13,
-                fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
-            const SizedBox(height: 3),
-            Row(children: [
-              const Icon(Icons.person_outline_rounded,
-                  size: 12, color: AppColors.textHint),
-              const SizedBox(width: 4),
-              Text(order.customer, style: const TextStyle(fontSize: 11,
-                  color: AppColors.textSecondary)),
-              const SizedBox(width: 8),
-              const Icon(Icons.access_time_rounded,
-                  size: 12, color: AppColors.textHint),
-              const SizedBox(width: 4),
-              Text(order.time, style: const TextStyle(fontSize: 11,
-                  color: AppColors.textSecondary)),
-            ]),
-          ],
-        )),
-        Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          Text(fmt(order.price), style: const TextStyle(fontSize: 13,
-              fontWeight: FontWeight.w700, color: AppColors.primary)),
-          const SizedBox(height: 4),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.border, width: 0.5),
+        ),
+        child: Row(children: [
+          Container(width: 44, height: 44,
             decoration: BoxDecoration(
-              color: order.status.color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
+              color: _statusColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(order.status.label, style: TextStyle(fontSize: 10,
-                fontWeight: FontWeight.w600, color: order.status.color)),
-          ),
+            child: Center(child: Text(order.serviceEmoji,
+                style: const TextStyle(fontSize: 22)))),
+          const SizedBox(width: 12),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(order.serviceName, style: const TextStyle(fontSize: 13,
+                  fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+              const SizedBox(height: 3),
+              Row(children: [
+                const Icon(Icons.person_outline_rounded,
+                    size: 12, color: AppColors.textHint),
+                const SizedBox(width: 4),
+                Text(order.customerName, style: const TextStyle(fontSize: 11,
+                    color: AppColors.textSecondary)),
+                const SizedBox(width: 8),
+                const Icon(Icons.access_time_rounded,
+                    size: 12, color: AppColors.textHint),
+                const SizedBox(width: 4),
+                Text(order.formattedTime, style: const TextStyle(fontSize: 11,
+                    color: AppColors.textSecondary)),
+              ]),
+            ],
+          )),
+          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Text(fmt(order.price), style: const TextStyle(fontSize: 13,
+                fontWeight: FontWeight.w700, color: AppColors.primary)),
+            const SizedBox(height: 4),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: _statusColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(order.status.label, style: TextStyle(fontSize: 10,
+                  fontWeight: FontWeight.w600, color: _statusColor)),
+            ),
+            const SizedBox(height: 4),
+            const Icon(Icons.chevron_right_rounded,
+                size: 16, color: AppColors.textHint),
+          ]),
         ]),
-      ]),
+      ),
     );
   }
 }
