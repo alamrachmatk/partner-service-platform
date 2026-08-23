@@ -5,6 +5,7 @@ import 'edit_profile_mitra_screen.dart';
 import 'portfolio_screen.dart';
 import 'service_area_screen.dart';
 import '../../../auth/presentation/screens/auth_mitra_screen.dart';
+import '../../../earnings/presentation/screens/earnings_screen.dart';
 
 class MitraProfileScreen extends StatelessWidget {
   final MitraModel mitra;
@@ -39,6 +40,14 @@ class MitraProfileScreen extends StatelessWidget {
           const SizedBox(height: 16),
 
           // ── Menu ──
+          _MenuItem(
+            icon: Icons.account_balance_wallet_outlined,
+            label: 'Pendapatan & Saldo',
+            subtitle: 'Lihat saldo dan tarik dana',
+            color: AppColors.success,
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+                builder: (_) => const EarningsScreen())),
+          ),
           _MenuItem(
             icon: Icons.person_outline_rounded,
             label: 'Edit Profil',
@@ -268,11 +277,13 @@ class _MenuItem extends StatelessWidget {
   final IconData icon;
   final String label, subtitle;
   final VoidCallback onTap;
+  final Color? color;
   const _MenuItem({required this.icon, required this.label,
-      required this.subtitle, required this.onTap});
+      required this.subtitle, required this.onTap, this.color});
 
   @override
   Widget build(BuildContext context) {
+    final iconColor = color ?? AppColors.primary;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -286,10 +297,10 @@ class _MenuItem extends StatelessWidget {
         child: Row(children: [
           Container(width: 38, height: 38,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: iconColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: AppColors.primary, size: 20)),
+            child: Icon(icon, color: iconColor, size: 20)),
           const SizedBox(width: 14),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,
             children: [
