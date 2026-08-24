@@ -6,6 +6,7 @@ import 'portfolio_screen.dart';
 import 'service_area_screen.dart';
 import '../../../auth/presentation/screens/auth_mitra_screen.dart';
 import '../../../earnings/presentation/screens/earnings_screen.dart';
+import '../../../reviews/presentation/screens/reviews_screen.dart';
 
 class MitraProfileScreen extends StatelessWidget {
   final MitraModel mitra;
@@ -47,6 +48,14 @@ class MitraProfileScreen extends StatelessWidget {
             color: AppColors.success,
             onTap: () => Navigator.push(context, MaterialPageRoute(
                 builder: (_) => const EarningsScreen())),
+          ),
+          _MenuItem(
+            icon: Icons.star_outline_rounded,
+            label: 'Ulasan & Reputasi',
+            subtitle: 'Lihat dan balas ulasan pelanggan',
+            color: AppColors.secondary,
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+                builder: (_) => const ReviewsScreen())),
           ),
           _MenuItem(
             icon: Icons.person_outline_rounded,
