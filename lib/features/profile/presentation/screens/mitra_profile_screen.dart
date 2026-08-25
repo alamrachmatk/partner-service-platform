@@ -7,6 +7,7 @@ import 'service_area_screen.dart';
 import '../../../auth/presentation/screens/auth_mitra_screen.dart';
 import '../../../earnings/presentation/screens/earnings_screen.dart';
 import '../../../reviews/presentation/screens/reviews_screen.dart';
+import '../../../reports/presentation/screens/reports_screen.dart';
 
 class MitraProfileScreen extends StatelessWidget {
   final MitraModel mitra;
@@ -48,6 +49,14 @@ class MitraProfileScreen extends StatelessWidget {
             color: AppColors.success,
             onTap: () => Navigator.push(context, MaterialPageRoute(
                 builder: (_) => const EarningsScreen())),
+          ),
+          _MenuItem(
+            icon: Icons.bar_chart_rounded,
+            label: 'Laporan & Performa',
+            subtitle: 'Statistik dan grafik bulanan',
+            color: AppColors.info,
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+                builder: (_) => const ReportsScreen())),
           ),
           _MenuItem(
             icon: Icons.star_outline_rounded,
