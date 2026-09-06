@@ -9,6 +9,9 @@ import '../../../earnings/presentation/screens/earnings_screen.dart';
 import '../../../reviews/presentation/screens/reviews_screen.dart';
 import '../../../reports/presentation/screens/reports_screen.dart';
 import '../../../services/presentation/screens/manage_services_screen.dart';
+import '../../../tier/presentation/screens/tier_screen.dart';
+import '../../../settings/presentation/screens/settings_screen.dart';
+import '../../../help/presentation/screens/help_screen.dart'; 
 
 class MitraProfileScreen extends StatelessWidget {
   final MitraModel mitra;
@@ -74,6 +77,38 @@ class MitraProfileScreen extends StatelessWidget {
             color: AppColors.primary,
             onTap: () => Navigator.push(context, MaterialPageRoute(
                 builder: (_) => const ManageServicesScreen())),
+          ),
+          _MenuItem(
+            icon: Icons.workspace_premium_rounded,
+            label: 'Program Mitra Unggulan',
+            subtitle: 'Tier & benefit eksklusif',
+            color: const Color(0xFFFFA000),
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+                builder: (_) => const TierScreen())),
+          ),
+          _MenuItem(
+            icon: Icons.settings_outlined,
+            label: 'Notifikasi & Pengaturan',
+            subtitle: 'Kelola notifikasi dan preferensi',
+            color: AppColors.textSecondary,
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+                builder: (_) => const SettingsScreen())),
+          ),
+          _MenuItem(
+            icon: Icons.help_outline_rounded,
+            label: 'Pusat Bantuan',
+            subtitle: 'FAQ, panduan, dan kontak CS',
+            color: AppColors.info,
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+                builder: (_) => const HelpScreen())),
+          ),
+          _MenuItem(
+            icon: Icons.help_outline_rounded,
+            label: 'Pusat Bantuan',
+            subtitle: 'FAQ, panduan, dan kontak CS',
+            color: AppColors.info,
+            onTap: () => Navigator.push(context, MaterialPageRoute(
+                builder: (_) => const HelpScreen())),
           ),
           _MenuItem(
             icon: Icons.person_outline_rounded,
@@ -232,6 +267,29 @@ class _ProfileCard extends StatelessWidget {
                 color: mitra.status == MitraStatus.verified
                     ? AppColors.success : AppColors.warning)),
           ]),
+        ),
+        const SizedBox(height: 10),
+        // Tier badge
+        GestureDetector(
+          onTap: () => Navigator.push(context, MaterialPageRoute(
+              builder: (_) => const TierScreen())),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFF78909C).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: const Color(0xFF78909C).withOpacity(0.3)),
+            ),
+            child: const Row(mainAxisSize: MainAxisSize.min, children: [
+              Text('🥈', style: TextStyle(fontSize: 14)),
+              SizedBox(width: 6),
+              Text('Silver Mitra', style: TextStyle(fontSize: 12,
+                  fontWeight: FontWeight.w700, color: Color(0xFF78909C))),
+              SizedBox(width: 6),
+              Icon(Icons.chevron_right_rounded,
+                  size: 14, color: Color(0xFF78909C)),
+            ]),
+          ),
         ),
         const SizedBox(height: 10),
         // Rating
