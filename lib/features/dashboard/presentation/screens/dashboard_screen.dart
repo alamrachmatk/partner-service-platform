@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/models/mitra_model.dart';
 import '../../../../core/models/mitra_order_model.dart';
+import '../../../../core/widgets/online_status_widget.dart';
+import '../../../../core/services/location_service.dart';
 import '../../../orders/presentation/screens/mitra_order_detail_screen.dart';
 
 // ── Model & Enum lokal ──
@@ -84,38 +86,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 fontWeight: FontWeight.w700, color: Colors.white)),
                       ],
                     )),
-                    // Toggle online/offline
-                    GestureDetector(
-                      onTap: () => setState(
-                          () => _isAvailableToday = !_isAvailableToday),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 7),
-                        decoration: BoxDecoration(
-                          color: _isAvailableToday
-                              ? Colors.white
-                              : Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Container(width: 8, height: 8,
-                            decoration: BoxDecoration(
-                              color: _isAvailableToday
-                                  ? AppColors.success : Colors.white60,
-                              shape: BoxShape.circle,
-                            )),
-                          const SizedBox(width: 6),
-                          Text(
-                            _isAvailableToday ? 'Online' : 'Offline',
-                            style: TextStyle(fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                color: _isAvailableToday
-                                    ? AppColors.primary : Colors.white),
-                          ),
-                        ]),
-                      ),
-                    ),
+                    // Toggle online/offline — pakai widget baru
+                    const OnlineToggleButton(compact: true),
                   ]),
                 ),
               ),
@@ -126,6 +98,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // ── Toggle Online/Offline besar ──
+                    const OnlineToggleButton(compact: false),
+                    const SizedBox(height: 12),
+                    // ── Share lokasi card ──
+                    const LocationShareCard(isActiveOrder: true),
+                    const SizedBox(height: 16),
                     // ── Stat cards ──
                     Row(children: [
                       _StatCard(label: 'Pendapatan\nHari Ini',
