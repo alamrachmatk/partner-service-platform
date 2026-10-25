@@ -4,6 +4,9 @@ import '../../../../core/models/mitra_model.dart';
 import '../../../../core/models/mitra_order_model.dart';
 import '../../../../core/widgets/online_status_widget.dart';
 import '../../../../core/services/location_service.dart';
+import '../../../../core/widgets/notification_bell.dart';
+import '../../../notifications/presentation/screens/mitra_notifications_screen.dart';
+import 'earnings_target_card.dart';
 import '../../../orders/presentation/screens/mitra_order_detail_screen.dart';
 
 // ── Model & Enum lokal ──
@@ -87,6 +90,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ],
                     )),
                     // Toggle online/offline — pakai widget baru
+                    NotificationBell(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(
+                          builder: (_) => const MitraNotificationsScreen())),
+                    ),
+                    const SizedBox(width: 8),
                     const OnlineToggleButton(compact: true),
                   ]),
                 ),
@@ -121,6 +129,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           icon: Icons.star_outline_rounded,
                           color: AppColors.secondary),
                     ]),
+                    const SizedBox(height: 16),
+                    // ── Target pendapatan ──
+                    const EarningsTargetCard(),
                     const SizedBox(height: 16),
 
                     // ── Grafik mingguan ──

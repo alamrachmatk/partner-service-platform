@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/models/mitra_order_model.dart';
+import '../../../../core/services/order_extras_service.dart';
+import 'order_extras_sections.dart';
 
 class MitraOrderDetailScreen extends StatefulWidget {
   final MitraOrderModel order;
@@ -59,10 +61,7 @@ class _MitraOrderDetailScreenState extends State<MitraOrderDetailScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text('Selesaikan Pesanan?',
             style: TextStyle(fontWeight: FontWeight.w700)),
-        content: const Text(
-          'Pastikan semua pekerjaan sudah selesai dan pelanggan sudah puas sebelum menyelesaikan pesanan.',
-          style: TextStyle(fontSize: 14, color: AppColors.textSecondary, height: 1.5),
-        ),
+        content: _buildCompleteContent(),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -79,6 +78,45 @@ class _MitraOrderDetailScreenState extends State<MitraOrderDetailScreen> {
         ],
       ),
     ) ?? false;
+  }
+
+  Widget _buildCompleteContent() {
+    final svc = OrderExtrasService();
+    final warnings = <String>[];
+    if (!svc.hasAfterPhoto(_order.id)) {
+      warnings.add('Foto sesudah pekerjaan belum diunggah. Foto ini jadi '
+          'bukti jika ada komplain.');
+    }
+    final pending = svc.pendingCount(_order.id);
+    if (pending > 0) {
+      warnings.add('Ada $pending biaya tambahan yang belum direspons '
+          'pelanggan. Biaya yang belum disetujui tidak ditagihkan.');
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Pastikan semua pekerjaan sudah selesai dan pelanggan sudah puas sebelum menyelesaikan pesanan.',
+          style: TextStyle(fontSize: 14, color: AppColors.textSecondary, height: 1.5),
+        ),
+        ...warnings.map((w) => Container(
+          margin: const EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: AppColors.warning.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Icon(Icons.warning_amber_rounded,
+                size: 16, color: AppColors.warning),
+            const SizedBox(width: 8),
+            Expanded(child: Text(w, style: const TextStyle(
+                fontSize: 12, color: AppColors.warning, height: 1.4))),
+          ]),
+        )),
+      ],
+    );
   }
 
   Color get _statusColor {
@@ -190,6 +228,10 @@ class _MitraOrderDetailScreenState extends State<MitraOrderDetailScreen> {
               ]),
             ),
             const SizedBox(height: 12),
+
+            // ── Biaya tambahan & foto bukti pekerjaan ──
+            ExtraChargeSection(order: _order),
+            BeforeAfterSection(order: _order),
 
             // ── Info jadwal ──
             _SectionCard(title: 'Jadwal', icon: Icons.calendar_today_outlined,
